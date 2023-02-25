@@ -79,11 +79,28 @@ def ocr_gpt():
         json_compatible_item_data = jsonable_encoder(json_response)
         return JSONResponse(content=json_compatible_item_data)
 
-
+"""
 @app.get('/check_answers/{q0}/{a0}/{q1}/{a1}/{q2}/{a2}/{q3}/{a3}/{q4}/{a4}')
 def giving_back_score(q0: str, a0: str, q1: str, a1: str, q2: str, a2: str, q3: str, a3: str, q4: str, a4: str):
     # Format them back to a single string for GPT
     string_input = '1. '+q0+'\n'+'Answer: '+a0+'\n'+'2. '+q1+'\n'+'Answer: '+a1+'\n'+'3. '+q2+'\n'+'Answer: '+a2+'\n'+'4. '+q3+'\n'+'Answer: '+a3+'\n'+'5. '+q4+'\n'+'Answer: '+a4
+    with open('context.pickle', 'rb') as handle:
+        context = pickle.load(handle)
+        answer = execute(context, id=3, age="university student", prompt=string_input)
+        split_string = answer.split('\n')
+        json_response = [{'f0': split_string[0], # f for feedback
+                          'f1': split_string[1],
+                          'f2': split_string[2],
+                          'f3': split_string[3],
+                          'f4': split_string[4]}]
+        json_compatible_item_data = jsonable_encoder(json_response)
+        return JSONResponse(content=json_compatible_item_data)
+"""
+
+@app.get('/check_answers/{questions_answers}')
+def giving_back_score(questions_answers: list):
+    # Format them back to a single string for GPT
+    string_input = '1. '+questions_answers[0]['question']+'\n'+'Answer: '+questions_answers[0]['answer']+'\n'+'2. '+questions_answers[1]['question']+'\n'+'Answer: '+questions_answers[1]['answer']+'\n'+'3. '+questions_answers[2]['question']+'\n'+'Answer: '+questions_answers[2]['answer']+'\n'+'4. '+questions_answers[3]['question']+'\n'+'Answer: '+questions_answers[3]['answer']+'\n'+'5. '+questions_answers[4]['question']+'\n'+'Answer: '+questions_answers[4]['answer']
     with open('context.pickle', 'rb') as handle:
         context = pickle.load(handle)
         answer = execute(context, id=3, age="university student", prompt=string_input)
