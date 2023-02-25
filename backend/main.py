@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import os #To be able to mkdir
 import shutil # To be able to remove folders+contents
-
+from gpt.request_gpt import text_to_df, get_context_encoding, execute
 app = FastAPI()
 
 name_of_the_subfolder = 'items'
@@ -87,3 +87,17 @@ def create_folder(subject_id: str, week_id: int, file_id: str):
     TBD
     """
     return #TBD
+
+@app.get("/test")
+def ocr_gpt():
+    import easyocr
+    import numpy as np
+    reader = easyocr.Reader(['en']) # this needs to run only once to load the model into memory
+    result = reader.readtext('test.png')
+    ocr_result = ""
+    for i in result:
+        ocr_result += (i[1]+" ")
+    df = text_to_df(ocr_result)
+    context = get_context_encoding(df)
+    answer = execute(context, id=2, age="university student", prompt="")
+    return answer
