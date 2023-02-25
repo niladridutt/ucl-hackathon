@@ -70,11 +70,16 @@ async def create_upload_file(files: List[UploadFile] = File(...)):
                       'q3': split_string[6], 'a3': split_string[7],
                       'q4': split_string[8], 'a4': split_string[9]}]
     """
-    json_response = [{'q0': split_string[0],  # One \n between q and a, two between a and next q
-                      'q1': split_string[3],
-                      'q2': split_string[6],
-                      'q3': split_string[9],
-                      'q4': split_string[12]}]
+    json_response = [{'q0': split_string[0], # One \n between q and a, two between a and next q 
+                          'q1': split_string[3],
+                          'q2': split_string[6],
+                          'q3': split_string[9],
+                          'q4': split_string[12],
+                          'q5': split_string[15],
+                          'q6': split_string[18],
+                          'q7': split_string[21],
+                          'q8': split_string[24],
+                          'q9': split_string[27]}]
     json_compatible_item_data = jsonable_encoder(json_response)
     # with open('context.pickle', 'wb') as handle:
     #     pickle.dump(context, handle, protocol=pickle.HIGHEST_PROTOCOL)
