@@ -1,0 +1,42 @@
+<div class="body-style">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: green;">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#" style="color: white">Reviewr</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarText">
+            <span class="navbar-text" style="margin-left: 80%; color: white;">
+              Andrei Score: 0
+            </span>
+          </div>
+        </div>
+      </nav>
+
+    <div style="margin-top: 3%;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4" *ngFor="let pdf of pdfList">
+                <input class="form-check-input" type="checkbox" [id]="pdf.id" (change)="onCheckboxChange($event)" [checked]="selectedPdfIds.includes(pdf.id)">
+                <div class="card mb-3">
+                    <img [src]="pdf.thumbnail" class="card-img-top" alt="...">
+                    <div class="card-body">
+                    <h5 class="card-title">{{pdf.title}}</h5>
+                    <a [href]="pdf.pdfUrl" class="btn btn-primary">View PDF</a>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-outline-success" style="margin-left: 88%; margin-bottom: 10%;" (click)="uploadPdf()">
+        Add
+    </button>
+
+    <button type="button" class="btn btn-outline-success" style="margin-left: 45%; width: 10%;" (click)="startQuiz()">
+        Start Quiz!
+    </button>          
+      
+</div>
+  
