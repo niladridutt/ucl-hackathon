@@ -18,6 +18,8 @@ def get_prompt(id=0, age="university student", prompt="", word_count=200):
         return f"Generate 10 questions for based on the given text for a {age}. Please provide deatiled answers to the questions as well."
     elif id ==1:
         return f"Generate a {word_count} word summary of the text for a {age}."
+    elif id==2:
+        return f"Based the text above, {prompt}"
     return f"Please evaluate each of the below answers by a {age} for the given questions according to the text provided above. Also, give a score of 1-10 to each of the answers one by one and provide feedback. The questions and answers are as follows:\n {prompt}"
 
 
@@ -38,6 +40,7 @@ def read_textfile(file_name):
 
 def text_to_df(texts):
     texts = texts.replace('-',' ').replace('_', ' ')
+    texts = re.sub(' {2,}', ' ', texts)
     df = pd.DataFrame([("", texts)], columns = ['fname', 'text'])
     df['text'] = df.fname + ". " + remove_newlines(df.text)
     return df
@@ -48,7 +51,6 @@ def split_into_many(text, tokenizer, max_tokens = max_tokens):
     
     # Get the number of tokens for each sentence
     n_tokens = [len(tokenizer.encode(" " + sentence)) for sentence in sentences]
-    
     chunks = []
     tokens_so_far = 0
     chunk = []
@@ -99,19 +101,12 @@ def get_existing_context(file_name):
 
 
 def create_context(question, df, max_len=1800, size="ada"):
-
     q_embeddings = openai.Embedding.create(input=question, engine='text-embedding-ada-002')['data'][0]['embedding']
-
     df['distances'] = distances_from_embeddings(q_embeddings, df['embeddings'].values, distance_metric='cosine')
-
-
     returns = []
     cur_len = 0
-
     for i, row in df.sort_values('distances', ascending=True).iterrows():
-        
         cur_len += row['n_tokens'] + 4
-        
         if cur_len > max_len:
             break
         returns.append(row["text"])
@@ -158,7 +153,7 @@ def answer_question(
 
 
 def execute(context, id, age, prompt):
-    prompt = get_prompt(id=id, age="7th grade student", prompt=z)
+    prompt = get_prompt(id=id, age=age, prompt=prompt)
     answer = answer_question(context, question=prompt, debug=False)
     return answer
 
@@ -185,5 +180,5 @@ if __name__ == '__main__':
     texts = read_textfile(file_name)
     df = text_to_df(texts)
     context = get_context_encoding(df)
-    answer = execute(context, id=2, age="university student", prompt="")
+    answer = execute(context, id=3, age="university student", prompt="")
     print(answer)
