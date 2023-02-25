@@ -86,7 +86,12 @@ def ocr_gpt():
                           'q1': split_string[3],
                           'q2': split_string[6],
                           'q3': split_string[9],
-                          'q4': split_string[12]}]
+                          'q4': split_string[12],
+                          'q5': split_string[15],
+                          'q6': split_string[18],
+                          'q7': split_string[21],
+                          'q8': split_string[24],
+                          'q9': split_string[27]}]
         json_compatible_item_data = jsonable_encoder(json_response)
         return JSONResponse(content=json_compatible_item_data)
 
@@ -111,15 +116,20 @@ def giving_back_score(q0: str, a0: str, q1: str, a1: str, q2: str, a2: str, q3: 
 @app.get('/check_answers/{questions_answers}')
 def giving_back_score(questions_answers):
     # Format them back to a single string for GPT
-    string_input = '1. '+questions_answers[0]['question']+'\n'+'Answer: '+questions_answers[0]['answer']+'\n'+'2. '+questions_answers[1]['question']+'\n'+'Answer: '+questions_answers[1]['answer']+'\n'+'3. '+questions_answers[2]['question']+'\n'+'Answer: '+questions_answers[2]['answer']+'\n'+'4. '+questions_answers[3]['question']+'\n'+'Answer: '+questions_answers[3]['answer']+'\n'+'5. '+questions_answers[4]['question']+'\n'+'Answer: '+questions_answers[4]['answer']
+    string_input = '1. '+questions_answers[0]['question']+'\n'+'Answer: '+questions_answers[0]['answer']+'\n'+'\n'+'2. '+questions_answers[1]['question']+'\n'+'Answer: '+questions_answers[1]['answer']+'\n'+'\n'+'3. '+questions_answers[2]['question']+'\n'+'Answer: '+questions_answers[2]['answer']+'\n'+'\n'+'4. '+questions_answers[3]['question']+'\n'+'Answer: '+questions_answers[3]['answer']+'\n'+'\n'+'5. '+questions_answers[4]['question']+'\n'+'Answer: '+questions_answers[4]['answer']+'\n'+'\n'+'6. '+questions_answers[5]['question']+'\n'+'Answer: '+questions_answers[5]['answer']+'\n'+'\n'+'7. '+questions_answers[6]['question']+'\n'+'Answer: '+questions_answers[6]['answer']+'\n'+'\n'+'8. '+questions_answers[7]['question']+'\n'+'Answer: '+questions_answers[7]['answer']+'\n'+'\n'+'9. '+questions_answers[8]['question']+'\n'+'Answer: '+questions_answers[8]['answer']+'\n'+'\n'+'10. '+questions_answers[9]['question']+'\n'+'Answer: '+questions_answers[9]['answer']
     with open('context.pickle', 'rb') as handle:
         context = pickle.load(handle)
         answer = execute(context, id=3, age="university student", prompt=string_input)
         split_string = answer.split('\n')
         json_response = [{'f0': split_string[0], # f for feedback
-                          'f1': split_string[1],
-                          'f2': split_string[2],
-                          'f3': split_string[3],
-                          'f4': split_string[4]}]
+                          'f1': split_string[2],
+                          'f2': split_string[4],
+                          'f3': split_string[6],
+                          'f4': split_string[8],
+                          'f5': split_string[10], # f for feedback
+                          'f6': split_string[12],
+                          'f7': split_string[14],
+                          'f8': split_string[16],
+                          'f9': split_string[18]}]
         json_compatible_item_data = jsonable_encoder(json_response)
         return JSONResponse(content=json_compatible_item_data)
