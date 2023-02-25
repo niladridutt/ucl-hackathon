@@ -18,6 +18,8 @@ def get_prompt(id=0, age="university student", prompt="", word_count=200):
         return f"Generate 10 questions for based on the given text for a {age}. Please provide deatiled answers to the questions as well."
     elif id ==1:
         return f"Generate a {word_count} word summary of the text for a {age}."
+    elif id==2:
+        return f"Given the text, {prompt}"
     return f"Please evaluate each of the below answers by a {age} for the given questions according to the text provided above. Also, give a score of 1-10 to each of the answers one by one and provide feedback. The questions and answers are as follows:\n {prompt}"
 
 
@@ -185,5 +187,5 @@ if __name__ == '__main__':
     texts = read_textfile(file_name)
     df = text_to_df(texts)
     context = get_context_encoding(df)
-    answer = execute(context, id=2, age="university student", prompt="")
+    answer = execute(context, id=3, age="university student", prompt="")
     print(answer)
