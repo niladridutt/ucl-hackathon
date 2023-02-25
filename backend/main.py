@@ -1,5 +1,5 @@
 from typing import Union
-
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
@@ -10,6 +10,16 @@ from gpt.request_gpt import text_to_df, get_context_encoding, execute
 app = FastAPI()
 
 name_of_the_subfolder = 'items'
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class Item(BaseModel):
