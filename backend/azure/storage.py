@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from azure.storage.blob import BlobServiceClient, generate_account_sas, ResourceTypes, AccountSasPermissions
 from azure.identity import DefaultAzureCredential
 
-class get_client():
+class azure_storage():
     def __init__(self):
         self.storage_name = "uclcsshackathon"
         self.key = "cXjXg5bsojb13C/XlWHigGydjblxc0tGtwtaVN3HKOsTwSmuRLtbZFzCT2K0aTL6UI0QkyUyKef5+ASt9bNKqA=="
@@ -31,6 +31,9 @@ class get_client():
 
     def delete(self, file_name):
         if "png" in file_name:
-
+            file_name = file_name+"png"
         blob_client = self.blob_service_client.get_blob_client(container=self.container_name, blob=file_name)
-        blob_client.delete_blob()
+        blob_client.delete_blob(delete_snapshots="include")
+
+    def get_link(self, file_name):
+        url = "https: // uclcsshackathon.blob.core.windows.net / test / %s" % file_name

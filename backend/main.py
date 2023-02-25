@@ -12,7 +12,8 @@ import os  # To be able to mkdir
 import shutil  # To be able to remove folders+contents
 from gpt.request_gpt import text_to_df, get_context_encoding, execute
 import pickle
-
+from azure.storage import azure_storage
+from azure.ocr import OCR
 app = FastAPI()
 
 name_of_the_subfolder = 'items'
@@ -27,12 +28,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: Union[bool, None] = None
-
+storage = azure_storage()
+ocr = OCR()
 
 @app.get("/")
 def read_root():
@@ -121,12 +118,12 @@ def create_folder(subject_id: str, week_id: int, file_id: str):
 ## DASHBOARD
 @app.post("/uploadfile/")
 async def create_upload_file(file: UploadFile):
-    with open("temp", 'wb+') as writer:
-        shutil.copyfileobj(file.file, writer)
-        result = reader.readtext("temp")
-        ocr_result = ""
-        for i in result:
-            ocr_result += (i[1] + " ")
+    with open("temp.obj", 'wb+') as writer:
+        file_name = "test"
+        storage.upload(file_name, writer)
+        url = "https: // uclcsshackathon.blob.core.windows.net / test / %s" % file_name
+        ocr_result = ocr.get_ocr()
+
         df = text_to_df(ocr_result)
         context = get_context_encoding(df)
         with open('context.pickle', 'wb') as handle:
