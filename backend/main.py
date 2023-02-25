@@ -98,9 +98,9 @@ def send_pdf_list():
     #dirname = os.path.dirname(__file__) # Retrieving the current dir path
     #filename = os.path.join(dirname, filename_example) # Creating the new path  
     dummy_response = [
-        {'title':'title01', 'thumbnail':'https://modyolo.com/wp-content/uploads/2021/11/thumbnail-maker-create-banners-channel-art-150x150.jpg', 'pdfUrl':'https://www.cs.jhu.edu/~misha/Fall07/Papers/Perez03.pdf'},
-        {'title':'title02', 'thumbnail':'https://modyolo.com/wp-content/uploads/2021/11/thumbnail-maker-create-banners-channel-art-150x150.jpg', 'pdfUrl':'https://www.cs.jhu.edu/~misha/Fall07/Papers/Perez03.pdf'},
-        {'title':'title03', 'thumbnail':'https://modyolo.com/wp-content/uploads/2021/11/thumbnail-maker-create-banners-channel-art-150x150.jpg', 'pdfUrl':'https://www.cs.jhu.edu/~misha/Fall07/Papers/Perez03.pdf'},
+        {'id':0, 'title':'title01', 'thumbnail':'https://modyolo.com/wp-content/uploads/2021/11/thumbnail-maker-create-banners-channel-art-150x150.jpg', 'pdfUrl':'https://www.cs.jhu.edu/~misha/Fall07/Papers/Perez03.pdf'},
+        {'id':1, 'title':'title02', 'thumbnail':'https://modyolo.com/wp-content/uploads/2021/11/thumbnail-maker-create-banners-channel-art-150x150.jpg', 'pdfUrl':'https://www.cs.jhu.edu/~misha/Fall07/Papers/Perez03.pdf'},
+        {'id':2, 'title':'title03', 'thumbnail':'https://modyolo.com/wp-content/uploads/2021/11/thumbnail-maker-create-banners-channel-art-150x150.jpg', 'pdfUrl':'https://www.cs.jhu.edu/~misha/Fall07/Papers/Perez03.pdf'},
     ]
     json_compatible_item_data = jsonable_encoder(dummy_response)  
     return JSONResponse(content=json_compatible_item_data)
