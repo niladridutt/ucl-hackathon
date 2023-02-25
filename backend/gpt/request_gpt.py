@@ -29,23 +29,23 @@ def remove_newlines(serie):
     return serie
 
 
-
-def text_to_df(file="texts/tuberculosis.txt"):
-    texts=[]
-    with open(file, "r", encoding="UTF-8") as f:
+def read_textfile(file_name):
+    with open(file_name, "r", encoding="UTF-8") as f:
         text = f.read()
         text = text[6000:15000]
-        texts.append((file[20:-20].replace('-',' ').replace('_', ' ').replace('#update',''), text))
+        return text
 
-    df = pd.DataFrame(texts, columns = ['fname', 'text'])
+
+def text_to_df(texts):
+    texts = texts.replace('-',' ').replace('_', ' ')
+    df = pd.DataFrame([("", texts)], columns = ['fname', 'text'])
     df['text'] = df.fname + ". " + remove_newlines(df.text)
     return df
 
 
-def split_into_many(text, max_tokens = max_tokens):
-
+def split_into_many(text, tokenizer, max_tokens = max_tokens):
     sentences = text.split('. ')
-
+    
     # Get the number of tokens for each sentence
     n_tokens = [len(tokenizer.encode(" " + sentence)) for sentence in sentences]
     
@@ -67,13 +67,11 @@ def split_into_many(text, max_tokens = max_tokens):
     return chunks
 
 
-def get_context_encoding(file_name="texts/tuberculosis.txt"):
+def get_context_encoding(df):
     tokenizer = tiktoken.get_encoding("cl100k_base")
-    df = text_to_df(file=file_name)
     df.columns = ['title', 'text']
     df['n_tokens'] = df.text.apply(lambda x: len(tokenizer.encode(x)))
     shortened = []
-
 
     for row in df.iterrows():
 
@@ -81,7 +79,7 @@ def get_context_encoding(file_name="texts/tuberculosis.txt"):
             continue
 
         if row[1]['n_tokens'] > max_tokens:
-            shortened += split_into_many(row[1]['text'])
+            shortened += split_into_many(row[1]['text'], tokenizer)
 
         else:
             shortened.append( row[1]['text'] )
@@ -90,7 +88,7 @@ def get_context_encoding(file_name="texts/tuberculosis.txt"):
     df = pd.DataFrame(shortened, columns = ['text'])
     df['n_tokens'] = df.text.apply(lambda x: len(tokenizer.encode(x)))
     df['embeddings'] = df.text.apply(lambda x: openai.Embedding.create(input=x, engine='text-embedding-ada-002')['data'][0]['embedding'])
-    df['embeddings'] = df['embeddings'].apply(eval).apply(np.array)
+    #df['embeddings'] = df['embeddings'].apply(eval).apply(np.array)
     return df
 
 
@@ -100,9 +98,7 @@ def get_existing_context(file_name):
     return df
 
 
-def create_context(
-    question, df, max_len=1800, size="ada"
-):
+def create_context(question, df, max_len=1800, size="ada"):
 
     q_embeddings = openai.Embedding.create(input=question, engine='text-embedding-ada-002')['data'][0]['embedding']
 
@@ -166,9 +162,9 @@ def execute(context, id, age, prompt):
     answer = answer_question(context, question=prompt, debug=False)
     return answer
 
-#print(answer_question(df, question="What is our newest embeddings model?"))
+
 if __name__ == '__main__':
-    context = get_existing_context("processed/embeddings.csv")
+    #context = get_existing_context("processed/embeddings.csv")
     z = """
     1. What is the significance of the tuberculin test in determining the presence of tuberculosis?
     Answer: The tuberculin test is used to detect the presence of tuberculosis by introducing a small amount of the tubercle bacilli into the body and observing the reaction of the individual. If the individual reacts positively to the test, it indicates that they are infected with tuberculosis.
@@ -185,6 +181,9 @@ if __name__ == '__main__':
     5. What is the importance of the age of the individual in the analysis of a tubercular infection?
     Answer: The age of the individual is an important factor in the analysis of a tubercular infection, as it can affect the individual's susceptibility to the virus and the severity of the reaction.
     """
-    #context = get_context_encoding(file_name="texts/tuberculosis.txt")
-    answer = execute(context, id=0, age="university student", prompt="")
+    file_name = "text/tuberculosis.txt"
+    texts = read_textfile(file_name)
+    df = text_to_df(texts)
+    context = get_context_encoding(df)
+    answer = execute(context, id=2, age="university student", prompt="")
     print(answer)
