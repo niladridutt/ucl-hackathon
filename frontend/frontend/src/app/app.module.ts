@@ -14,6 +14,7 @@ import { UploadFileComponent } from './upload-file/upload-file.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { QuizComponent } from './quiz/quiz.component';
 
 
 
@@ -24,6 +25,7 @@ import { HttpClientModule } from '@angular/common/http';
     HomepageComponent,
     DashboardComponent,
     UploadFileComponent,
+    QuizComponent,
   ],
   imports: [
     BrowserModule,
