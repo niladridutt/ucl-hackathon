@@ -1,4 +1,36 @@
-from azure.storage.blob import BlobServiceClient
+import uuid
+from datetime import datetime, timedelta
+from azure.storage.blob import BlobServiceClient, generate_account_sas, ResourceTypes, AccountSasPermissions
+from azure.identity import DefaultAzureCredential
 
+class get_client():
+    def __init__(self):
+        self.storage_name = "uclcsshackathon"
+        self.key = "cXjXg5bsojb13C/XlWHigGydjblxc0tGtwtaVN3HKOsTwSmuRLtbZFzCT2K0aTL6UI0QkyUyKef5+ASt9bNKqA=="
+        self.default_credential = DefaultAzureCredential()
+        self.sas_token = generate_account_sas(
+            account_name=self.storage_name,
+            account_key=self.key,
+            resource_types=ResourceTypes(service=True),
+            permission=AccountSasPermissions(read=True),
+            expiry=datetime.utcnow() + timedelta(hours=1)
+        )
+        self.container_name = "test"
+        self.blob_service_client = BlobServiceClient(account_url="https://%s.blob.core.windows.net/"%self.storage_name, credential=self.sas_token)
+        self.container_client = self.blob_service_client.get_container_client(container= self.container_name)
 
-service = BlobServiceClient(account_url="https://<my-storage-account-name>.blob.core.windows.net/", credential=credential)
+    def upload(self, data_name, data):
+        blob_client = self.blob_service_client.get_blob_client(container= self.container_name, blob=data_name)
+        blob_client.upload_blob(data)
+
+    def list_all(self):
+        blob_list = self.container_client.list_blobs()
+        names = []
+        for blob in blob_list:
+            names.append(blob.name)
+
+    def delete(self, file_name):
+        if "png" in file_name:
+
+        blob_client = self.blob_service_client.get_blob_client(container=self.container_name, blob=file_name)
+        blob_client.delete_blob()
