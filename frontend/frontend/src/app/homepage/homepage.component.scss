@@ -1,0 +1,27 @@
+
+.body-style {
+    background-color: rgb(223, 245, 233);
+    height: 100%;
+    width: 100%;
+    top: 0%;
+    position: absolute;
+}
+
+.my-page-title {
+    font-family: 'Source Code Pro', monospace;
+    color: green;
+    text-align: center;
+    margin-top: 20%;
+    font-size: 200%;
+  }
+  
+.home-button {
+    margin-left: 45%;
+    width: 10%;
+    margin-top: 2%;
+}
+
+.home-button:hover {
+    background-color: lightgreen;
+}
+  

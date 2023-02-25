@@ -1,6 +1,8 @@
 from typing import Union
-
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import os #To be able to mkdir
 import shutil # To be able to remove folders+contents
@@ -8,6 +10,16 @@ from gpt.request_gpt import text_to_df, get_context_encoding, execute
 app = FastAPI()
 
 name_of_the_subfolder = 'items'
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class Item(BaseModel):
@@ -87,6 +99,21 @@ def create_folder(subject_id: str, week_id: int, file_id: str):
     TBD
     """
     return #TBD
+
+## DASHBOARD
+# 
+@app.get("/list_of_pdfs")
+def send_pdf_list():
+    #filename_example = "test_image"
+    #dirname = os.path.dirname(__file__) # Retrieving the current dir path
+    #filename = os.path.join(dirname, filename_example) # Creating the new path  
+    dummy_response = [
+        {'id':0, 'title':'title01', 'thumbnail':'https://modyolo.com/wp-content/uploads/2021/11/thumbnail-maker-create-banners-channel-art-150x150.jpg', 'pdfUrl':'https://www.cs.jhu.edu/~misha/Fall07/Papers/Perez03.pdf'},
+        {'id':1, 'title':'title02', 'thumbnail':'https://modyolo.com/wp-content/uploads/2021/11/thumbnail-maker-create-banners-channel-art-150x150.jpg', 'pdfUrl':'https://www.cs.jhu.edu/~misha/Fall07/Papers/Perez03.pdf'},
+        {'id':2, 'title':'title03', 'thumbnail':'https://modyolo.com/wp-content/uploads/2021/11/thumbnail-maker-create-banners-channel-art-150x150.jpg', 'pdfUrl':'https://www.cs.jhu.edu/~misha/Fall07/Papers/Perez03.pdf'},
+    ]
+    json_compatible_item_data = jsonable_encoder(dummy_response)  
+    return JSONResponse(content=json_compatible_item_data)
 
 @app.get("/test")
 def ocr_gpt():

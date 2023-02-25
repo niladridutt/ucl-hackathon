@@ -1,0 +1,17 @@
+<div class="container mt-4" class="body-style">
+    <div class="myform">
+        <h3>Upload a PDF file</h3>
+        <form (ngSubmit)="onSubmit()">
+        <div class="form-group" style="margin-bottom: 5%;">
+            <label for="fileName">File name:</label>
+            <input type="text" class="form-control" id="fileName" [(ngModel)]="fileName">
+        </div>
+        <div class="form-group" style="margin-bottom: 5%;">
+            <label for="pdfFile">PDF file:</label> <br>
+            <input type="file" class="form-control-file" (change)="onFileSelected($event)">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+  
