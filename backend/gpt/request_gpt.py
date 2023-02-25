@@ -1,4 +1,3 @@
-
 import requests
 import re
 import os
@@ -7,18 +6,19 @@ import tiktoken
 import openai
 from openai.embeddings_utils import distances_from_embeddings
 import numpy as np
-from openai.embeddings_utils import distances_from_embeddings, cosine_similarity
-
+from openai.embeddings_utils import distances_from_embeddings, \
+    cosine_similarity
 
 openai.api_key = "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"
 max_tokens = 500
 
+
 def get_prompt(id=0, age="university student", prompt="", word_count=200):
-    if id ==0:
+    if id == 0:
         return f"Generate 10 questions for based on the given text for a {age}. Please provide deatiled answers to the questions as well."
-    elif id ==1:
+    elif id == 1:
         return f"Generate a {word_count} word summary of the text for a {age}."
-    elif id==2:
+    elif id == 2:
         return f"Based the text above, {prompt}"
     return f"Please evaluate each of the below answers by a {age} for the given questions according to the text provided above. Also, give a score of 1-10 to each of the answers one by one and provide feedback. The questions and answers are as follows:\n {prompt}"
 
@@ -39,18 +39,19 @@ def read_textfile(file_name):
 
 
 def text_to_df(texts):
-    texts = texts.replace('-',' ').replace('_', ' ')
+    texts = texts.replace('-', ' ').replace('_', ' ')
     texts = re.sub(' {2,}', ' ', texts)
-    df = pd.DataFrame([("", texts)], columns = ['fname', 'text'])
+    df = pd.DataFrame([("", texts)], columns=['fname', 'text'])
     df['text'] = df.fname + ". " + remove_newlines(df.text)
     return df
 
 
-def split_into_many(text, tokenizer, max_tokens = max_tokens):
+def split_into_many(text, tokenizer, max_tokens=max_tokens):
     sentences = text.split('. ')
-    
+
     # Get the number of tokens for each sentence
-    n_tokens = [len(tokenizer.encode(" " + sentence)) for sentence in sentences]
+    n_tokens = [len(tokenizer.encode(" " + sentence)) for sentence in
+                sentences]
     chunks = []
     tokens_so_far = 0
     chunk = []
@@ -84,13 +85,14 @@ def get_context_encoding(df):
             shortened += split_into_many(row[1]['text'], tokenizer)
 
         else:
-            shortened.append( row[1]['text'] )
+            shortened.append(row[1]['text'])
 
-
-    df = pd.DataFrame(shortened, columns = ['text'])
+    df = pd.DataFrame(shortened, columns=['text'])
     df['n_tokens'] = df.text.apply(lambda x: len(tokenizer.encode(x)))
-    df['embeddings'] = df.text.apply(lambda x: openai.Embedding.create(input=x, engine='text-embedding-ada-002')['data'][0]['embedding'])
-    #df['embeddings'] = df['embeddings'].apply(eval).apply(np.array)
+    df['embeddings'] = df.text.apply(lambda x: openai.Embedding.create(input=x,
+                                                                       engine='text-embedding-ada-002')[
+        'data'][0]['embedding'])
+    # df['embeddings'] = df['embeddings'].apply(eval).apply(np.array)
     return df
 
 
@@ -101,8 +103,12 @@ def get_existing_context(file_name):
 
 
 def create_context(question, df, max_len=1800, size="ada"):
-    q_embeddings = openai.Embedding.create(input=question, engine='text-embedding-ada-002')['data'][0]['embedding']
-    df['distances'] = distances_from_embeddings(q_embeddings, df['embeddings'].values, distance_metric='cosine')
+    q_embeddings = \
+    openai.Embedding.create(input=question, engine='text-embedding-ada-002')[
+        'data'][0]['embedding']
+    df['distances'] = distances_from_embeddings(q_embeddings,
+                                                df['embeddings'].values,
+                                                distance_metric='cosine')
     returns = []
     cur_len = 0
     for i, row in df.sort_values('distances', ascending=True).iterrows():
@@ -113,15 +119,16 @@ def create_context(question, df, max_len=1800, size="ada"):
 
     return "\n\n###\n\n".join(returns)
 
+
 def answer_question(
-    df,
-    model="text-davinci-003",
-    question="Am I allowed to publish model outputs to Twitter, without a human review?",
-    max_len=4000,
-    size="ada",
-    debug=False,
-    max_tokens=max_tokens,
-    stop_sequence=None
+        df,
+        model="text-davinci-003",
+        question="Am I allowed to publish model outputs to Twitter, without a human review?",
+        max_len=4000,
+        size="ada",
+        debug=False,
+        max_tokens=max_tokens,
+        stop_sequence=None
 ):
     context = create_context(
         question,
@@ -159,7 +166,7 @@ def execute(context, id, age, prompt):
 
 
 if __name__ == '__main__':
-    #context = get_existing_context("processed/embeddings.csv")
+    # context = get_existing_context("processed/embeddings.csv")
     z = """
     1. What is the significance of the tuberculin test in determining the presence of tuberculosis?
     Answer: The tuberculin test is used to detect the presence of tuberculosis by introducing a small amount of the tubercle bacilli into the body and observing the reaction of the individual. If the individual reacts positively to the test, it indicates that they are infected with tuberculosis.
