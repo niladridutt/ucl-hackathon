@@ -58,11 +58,29 @@ async def create_upload_file(files: List[UploadFile] = File(...)):
                 result += ocr_result
     df = text_to_df(result)
     context = get_context_encoding(df)
-    with open('context.pickle', 'wb') as handle:
-        pickle.dump(context, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    dummy_response = [
-        {"Success": "true"}]
-    json_compatible_item_data = jsonable_encoder(dummy_response)
+    answer = execute(context, id=0, age="university student", prompt="")
+    # Formatting as JSON
+    # TODO: should we keep "1.", "2."... and "Answer:" in the strings
+    # q/a/q/a...
+    split_string = answer.split('\n')
+    """
+    json_response = [{'q0': split_string[0], 'a0': split_string[1],
+                      'q1': split_string[2], 'a1': split_string[3],
+                      'q2': split_string[4], 'a2': split_string[5],
+                      'q3': split_string[6], 'a3': split_string[7],
+                      'q4': split_string[8], 'a4': split_string[9]}]
+    """
+    json_response = [{'q0': split_string[0],  # One \n between q and a, two between a and next q
+                      'q1': split_string[3],
+                      'q2': split_string[6],
+                      'q3': split_string[9],
+                      'q4': split_string[12]}]
+    json_compatible_item_data = jsonable_encoder(json_response)
+    # with open('context.pickle', 'wb') as handle:
+    #     pickle.dump(context, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    # dummy_response = [
+    #     {"Success": "true"}]
+    # json_compatible_item_data = jsonable_encoder(dummy_response)
     return JSONResponse(content=json_compatible_item_data)
 
 
@@ -75,6 +93,8 @@ def ocr_gpt():
         # TODO: should we keep "1.", "2."... and "Answer:" in the strings
         # q/a/q/a...
         split_string = answer.split('\n')
+        print(split_string)
+
         """
         json_response = [{'q0': split_string[0], 'a0': split_string[1],
                           'q1': split_string[2], 'a1': split_string[3],
