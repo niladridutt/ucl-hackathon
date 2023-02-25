@@ -15,7 +15,7 @@ max_tokens = 500
 
 def get_prompt(id=0, age="university student", prompt="", word_count=200):
     if id == 0:
-        return f"Generate 10 questions for based on the given text for a {age}. Please provide deatiled answers to the questions as well."
+        return f"Generate 10 questions based on the given text for a {age}. Please provide deatiled answers to the questions as well."
     elif id == 1:
         return f"Generate a {word_count} word summary of the text for a {age}."
     elif id == 2:
