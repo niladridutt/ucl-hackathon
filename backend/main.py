@@ -109,7 +109,7 @@ def giving_back_score(q0: str, a0: str, q1: str, a1: str, q2: str, a2: str, q3: 
 """
 
 @app.get('/check_answers/{questions_answers}')
-def giving_back_score(questions_answers: list):
+def giving_back_score(questions_answers):
     # Format them back to a single string for GPT
     string_input = '1. '+questions_answers[0]['question']+'\n'+'Answer: '+questions_answers[0]['answer']+'\n'+'2. '+questions_answers[1]['question']+'\n'+'Answer: '+questions_answers[1]['answer']+'\n'+'3. '+questions_answers[2]['question']+'\n'+'Answer: '+questions_answers[2]['answer']+'\n'+'4. '+questions_answers[3]['question']+'\n'+'Answer: '+questions_answers[3]['answer']+'\n'+'5. '+questions_answers[4]['question']+'\n'+'Answer: '+questions_answers[4]['answer']
     with open('context.pickle', 'rb') as handle:
