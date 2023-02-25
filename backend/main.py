@@ -2,8 +2,12 @@ from typing import Union
 
 from fastapi import FastAPI
 from pydantic import BaseModel
+import os #To be able to mkdir
+import shutil # To be able to remove folders+contents
 
 app = FastAPI()
+
+name_of_the_subfolder = 'items'
 
 
 class Item(BaseModel):
@@ -16,7 +20,7 @@ class Item(BaseModel):
 def read_root():
     return {"Hello": "World"}
 
-
+""" Below are the examples from the FastAPI documentation, they work.
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
@@ -25,3 +29,61 @@ def read_item(item_id: int, q: Union[str, None] = None):
 @app.put("/items/{item_id}")
 def update_item(item_id: int, item: Item):
     return {"item_name": item.name, "item_id": item_id}
+"""
+
+# Create our methods
+
+## CREATION
+# Creating a folder for a new subject
+@app.get("/create/{subject_id}")
+def create_folder(subject_id: str):
+    dirname = os.path.dirname(__file__) # Retrieving the current dir path
+    filename = os.path.join(dirname, name_of_the_subfolder, subject_id) # Creating the new path
+    os.mkdir(filename)
+    return #TBD
+
+# Creating a folder for a new week
+@app.get("/create/{subject_id}/{week_id}")
+def create_folder(subject_id: str, week_id: int):
+    dirname = os.path.dirname(__file__) # Retrieving the current dir path
+    filename = os.path.join(dirname, name_of_the_subfolder, subject_id, week_id) # Creating the new path
+    os.mkdir(filename)
+    return #TBD
+
+
+## DELETION
+# Either for a subject
+@app.delete("/delete/{subject_id}")
+def create_folder(subject_id: str):
+    dirname = os.path.dirname(__file__) # Retrieving the current dir path
+    filename = os.path.join(dirname, name_of_the_subfolder, subject_id) # Creating the new path
+    shutil.rmtree(filename, ignore_errors=False)
+    return #TBD
+
+# Or for a week
+@app.delete("/delete/{subject_id}/{week_id}")
+def create_folder(subject_id: str, week_id: int):
+    dirname = os.path.dirname(__file__) # Retrieving the current dir path
+    filename = os.path.join(dirname, name_of_the_subfolder, subject_id, week_id) # Creating the new path
+    shutil.rmtree(filename, ignore_errors=False)
+    return #TBD
+
+# Or for a specific file
+@app.delete("/delete/{subject_id}/{week_id}/{file_id}")
+def create_folder(subject_id: str, week_id: int, file_id: str):
+    dirname = os.path.dirname(__file__) # Retrieving the current dir path
+    filename = os.path.join(dirname, name_of_the_subfolder, subject_id, week_id, file_id) # Creating the new path
+    os.remove(filename)
+    return #TBD
+
+
+## UPLOADING
+# Can only upload files
+@app.post("/upload/{subject_id}/{week_id}/{file_id}")
+def create_folder(subject_id: str, week_id: int, file_id: str):
+    dirname = os.path.dirname(__file__) # Retrieving the current dir path
+    filename = os.path.join(dirname, name_of_the_subfolder, subject_id, week_id, file_id) # Creating the new path
+    """
+    TBD
+    """
+    return #TBD
