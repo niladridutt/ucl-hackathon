@@ -119,12 +119,24 @@ def send_pdf_list():
 def ocr_gpt():
     import easyocr
     import numpy as np
+
+    # Performing OCR
     reader = easyocr.Reader(['en']) # this needs to run only once to load the model into memory
     result = reader.readtext('test.png')
     ocr_result = ""
     for i in result:
         ocr_result += (i[1]+" ")
+
+    # GPT part
     df = text_to_df(ocr_result)
     context = get_context_encoding(df)
     answer = execute(context, id=0, age="university student", prompt="")
-    return answer
+
+    # Formatting as JSON
+    # TODO: should we keep "1.", "2."... and "Answer:" in the strings
+    # q/a/q/a...
+    split_string = answer.split('\n')
+    json_response = [{'q0':split_string[0], 'a0':split_string[1], 'q1':split_string[2], 'a1':split_string[3], 'q2':split_string[4], 'a2':split_string[5], 'q3':split_string[6], 'a3':split_string[7], 'q4':split_string[8], 'a4':split_string[9]}]
+
+    json_compatible_item_data = jsonable_encoder(json_response)  
+    return JSONResponse(content=json_compatible_item_data)
