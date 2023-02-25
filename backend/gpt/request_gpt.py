@@ -40,6 +40,7 @@ def read_textfile(file_name):
 
 def text_to_df(texts):
     texts = texts.replace('-',' ').replace('_', ' ')
+    texts = re.sub(' {2,}', ' ', texts)
     df = pd.DataFrame([("", texts)], columns = ['fname', 'text'])
     df['text'] = df.fname + ". " + remove_newlines(df.text)
     return df
@@ -50,7 +51,6 @@ def split_into_many(text, tokenizer, max_tokens = max_tokens):
     
     # Get the number of tokens for each sentence
     n_tokens = [len(tokenizer.encode(" " + sentence)) for sentence in sentences]
-    
     chunks = []
     tokens_so_far = 0
     chunk = []
@@ -101,19 +101,12 @@ def get_existing_context(file_name):
 
 
 def create_context(question, df, max_len=1800, size="ada"):
-
     q_embeddings = openai.Embedding.create(input=question, engine='text-embedding-ada-002')['data'][0]['embedding']
-
     df['distances'] = distances_from_embeddings(q_embeddings, df['embeddings'].values, distance_metric='cosine')
-
-
     returns = []
     cur_len = 0
-
     for i, row in df.sort_values('distances', ascending=True).iterrows():
-        
         cur_len += row['n_tokens'] + 4
-        
         if cur_len > max_len:
             break
         returns.append(row["text"])
