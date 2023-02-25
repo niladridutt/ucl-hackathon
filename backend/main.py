@@ -12,12 +12,12 @@ import os  # To be able to mkdir
 import shutil  # To be able to remove folders+contents
 from gpt.request_gpt import text_to_df, get_context_encoding, execute
 import pickle
-from azure.storage import azure_storage
-from azure.ocr import OCR
+from azure_components.storage import azure_storage
+from azure_components.ocr import OCR
 app = FastAPI()
 
 name_of_the_subfolder = 'items'
-reader = easyocr.Reader(['en'])
+# reader = easyocr.Reader(['en'])
 origins = ["*"]
 
 app.add_middleware(
@@ -40,11 +40,22 @@ def read_root():
 async def create_upload_file(files: List[UploadFile] = File(...)):
     result = ""
     for file in files:
-        with open(file.filename, 'wb+') as writer:
+        file_name = ""
+        if "jpeg" in file.filename:
+            file_name = "test.png"
+        elif "png" in file.filename:
+            file_name = "test.png"
+        elif "jpg" in file.filename:
+            file_name = "test.png"
+        elif "pdf" in file.filename:
+            file_name = "test.pdf"
+        with open(file_name, 'wb+') as writer:
             shutil.copyfileobj(file.file, writer)
-            storage.upload(file.filename, files)
-            ocr_result = ocr.get_ocr(file.filename)
-            result += ocr_result
+            with open(file_name, 'rb') as file_:
+                storage.delete(file_name)
+                storage.upload(file_name, file_)
+                ocr_result = ocr.get_ocr(file.filename)
+                result += ocr_result
     df = text_to_df(result)
     context = get_context_encoding(df)
     with open('context.pickle', 'wb') as handle:

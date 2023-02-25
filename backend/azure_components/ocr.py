@@ -18,11 +18,12 @@ class OCR():
 
     def get_ocr(self, file_name):
         # Get an image with text
-        if "png" in file_name:
+        if "png" in file_name or "jpeg" in file_name or "jpg" in file_name:
             read_url = "https://uclcsshackathon.blob.core.windows.net/test/test.png"
         if "pdf" in file_name:
             read_url = "https://uclcsshackathon.blob.core.windows.net/test/test.pdf"
         # Call API with URL and raw response (allows you to get the operation location)
+        print(read_url)
         read_response = self.computervision_client.read(read_url,  raw=True)
 
         # Get the operation location (URL with an ID at the end) from the response
