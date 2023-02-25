@@ -99,5 +99,5 @@ def ocr_gpt():
         ocr_result += (i[1]+" ")
     df = text_to_df(ocr_result)
     context = get_context_encoding(df)
-    answer = execute(context, id=2, age="university student", prompt="")
+    answer = execute(context, id=0, age="university student", prompt="")
     return answer

@@ -160,7 +160,7 @@ def answer_question(
 
 
 def execute(context, id, age, prompt):
-    prompt = get_prompt(id=id, age="7th grade student", prompt=z)
+    prompt = get_prompt(id=id, age=age, prompt=prompt)
     answer = answer_question(context, question=prompt, debug=False)
     return answer
 
