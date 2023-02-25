@@ -90,7 +90,6 @@ def create_folder(subject_id: str, week_id: int, file_id: str):
     """
     return #TBD
 
-<<<<<<< HEAD
 ## DASHBOARD
 # 
 @app.get("/list_of_pdfs")
@@ -106,7 +105,6 @@ def send_pdf_list():
     json_compatible_item_data = jsonable_encoder(dummy_response)  
     return JSONResponse(content=json_compatible_item_data)
 
-=======
 @app.get("/test")
 def ocr_gpt():
     import easyocr
@@ -120,4 +118,3 @@ def ocr_gpt():
     context = get_context_encoding(df)
     answer = execute(context, id=0, age="university student", prompt="")
     return answer
->>>>>>> 76d14048529182fe43235fc58aae7a819c49d2a9
