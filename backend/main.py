@@ -57,6 +57,9 @@ async def create_upload_file(files: List[UploadFile] = File(...)):
                 storage.upload(file_name, file_)
                 ocr_result = ocr.get_ocr(file.filename)
                 result += ocr_result
+    print("*"*100)
+    print(result)
+    print("*" * 100)
     df = text_to_df(result)
     context = get_context_encoding(df)
     with open('context.pickle', 'wb') as handle:
