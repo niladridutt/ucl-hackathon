@@ -76,7 +76,7 @@ async def create_upload_file(files: List[UploadFile] = File(...)):
                       'q3': split_string[9],
                       'q4': split_string[12]}]
     global questions
-    questions = [split_string[0], split_string[3], split_string[6], split_string[9], split_string[12],split_string[15]]
+    questions = [split_string[0], split_string[3], split_string[6], split_string[9], split_string[12]]
     json_compatible_item_data = jsonable_encoder(json_response)
     # with open('context.pickle', 'wb') as handle:
     #     pickle.dump(context, handle, protocol=pickle.HIGHEST_PROTOCOL)
