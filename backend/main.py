@@ -33,6 +33,8 @@ def read_root():
 
 @app.post("/uploadfiles/")
 async def create_upload_file(files: List[UploadFile] = File(...)):
+    # Uploads list of PDFs/images which are to supplied as the study material
+    # and returns generated questions to the front-end
     result = ""
     for file in files:
         file_name = ""
@@ -47,10 +49,13 @@ async def create_upload_file(files: List[UploadFile] = File(...)):
         with open(file_name, 'wb+') as writer:
             shutil.copyfileobj(file.file, writer)
             with open(file_name, 'rb') as file_:
+                # Upload to azure storage
                 storage.delete(file_name)
                 storage.upload(file_name, file_)
+                # Run OCR to get text from pdf
                 ocr_result = ocr.get_ocr(file.filename)
                 result += ocr_result
+    # Encode text to be used as context vector for GPT
     df = text_to_df(result)
     context = get_context_encoding(df)
     with open('context.pickle', 'wb') as handle:
@@ -63,6 +68,7 @@ async def create_upload_file(files: List[UploadFile] = File(...)):
                       'q3': split_string[9],
                       'q4': split_string[12]}]
     global questions
+    # Return generated questions
     questions = [split_string[0], split_string[3], split_string[6], split_string[9], split_string[12]]
     json_compatible_item_data = jsonable_encoder(json_response)
     return JSONResponse(content=json_compatible_item_data)
@@ -70,6 +76,7 @@ async def create_upload_file(files: List[UploadFile] = File(...)):
 
 @app.post('/check_answers/')
 async def giving_back_score(request: Request):
+    # Provides assessment of your answers on the questions
     questions_answers = await request.json()
     global questions
     string_input = ""
