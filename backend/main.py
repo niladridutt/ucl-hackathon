@@ -123,14 +123,14 @@ async def giving_back_score(request: Request):
         print('zzzzzzzzzzzzzzzzzzzzzzzzzz')
         print(split_string)
         json_response = [{'f0': split_string[0], # f for feedback
-                          'f1': split_string[2],
-                          'f2': split_string[4],
-                          'f3': split_string[6],
-                          'f4': split_string[8],
-                          'f5': split_string[10], # f for feedback
-                          'f6': split_string[12],
-                          'f7': split_string[14],
-                          'f8': split_string[16],
-                          'f9': split_string[18]}]
+                          'f1': split_string[1],
+                          'f2': split_string[2],
+                          'f3': split_string[3],
+                          'f4': split_string[4],
+                          'f5': split_string[5], # f for feedback
+                          'f6': split_string[6],
+                          'f7': split_string[7],
+                          'f8': split_string[8],
+                          'f9': split_string[9]}]
         json_compatible_item_data = jsonable_encoder(json_response)
         return JSONResponse(content=json_compatible_item_data)
