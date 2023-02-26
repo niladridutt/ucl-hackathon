@@ -20,7 +20,7 @@ def get_prompt(id=0, age="university student", prompt="", word_count=200):
         return f"Generate a {word_count} word summary of the text for a {age}."
     elif id == 2:
         return f"Based the text above, {prompt}"
-    return f"As a teacher, evaluate each of the below answers by a {age} for the given questions according to the text provided above. Also, give a score of 1-10 to each of the answers one by one and provide feedback. The questions and answers are as follows:\n {prompt}"
+    return f"As a teacher, evaluate each of the below answers by a {age} for the given questions according to the text provided above. Also, give a score of 1-10 to each of the answers one by one and provide feedback. The questions are denoted as Q followed by the question. Each question is followed by the answer given by the student. As a teacher you should evaluate these answers against the text given above. :\n {prompt}"
 
 
 def remove_newlines(serie):
@@ -168,24 +168,24 @@ def execute(context, id, age, prompt):
 if __name__ == '__main__':
     # context = get_existing_context("processed/embeddings.csv")
     z = """
-    1. What is the significance of the tuberculin test in determining the presence of tuberculosis?
-    Answer: The tuberculin test is used to detect the presence of tuberculosis by introducing a small amount of the tubercle bacilli into the body and observing the reaction of the individual. If the individual reacts positively to the test, it indicates that they are infected with tuberculosis.
+    Q1. What is the significance of the tuberculin test in determining the presence of tuberculosis?
+    Answer 1: The moon is the biggest planet.
+    
+    Q2. What is the percentage of animals reacting tso the tuberculin test in the Vogelsberg cattle breed?
+    Answer 2: 5%
+    
+    Q3. What is the etiological factor of the various manifestations of tuberculosis?
+    Answer 3: tubercle bacilli.
 
-    2. What is the percentage of animals reacting tso the tuberculin test in the Vogelsberg cattle breed?
-    Answer: The percentage of animals reacting to the tuberculin test in the Vogelsberg cattle breed is about twice that of other breeds.
-
-    3. What is the etiological factor of the various manifestations of tuberculosis?
-    Answer: The etiological factor of the various manifestations of tuberculosis is the same, which is the tubercle bacilli.
-
-    4. What are the three factors necessary for the development of tuberculosis?
-    Answer: The three factors necessary for the development of tuberculosis are a susceptible organism, the tubercle virus, and the necessary opportunity for photosynthesis.
-
-    5. What is the importance of the age of the individual in the analysis of a tubercular infection?
-    Answer: The age of the individual is an important factor in the analysis of a tubercular infection, as it can affect the individual's susceptibility to the virus and the severity of the reaction.
+    Q4. What are the three factors necessary for the development of tuberculosis?
+    Answer 4: water, fire and air
+    
+    Q5. What is the importance of the age of the individual in the analysis of a tubercular infection?
+    Answer 5: Individual's age
     """
     file_name = "text/tuberculosis.txt"
     texts = read_textfile(file_name)
     df = text_to_df(texts)
     context = get_context_encoding(df)
-    answer = execute(context, id=3, age="university student", prompt="")
+    answer = execute(context, id=3, age="university student", prompt=z)
     print(answer)
