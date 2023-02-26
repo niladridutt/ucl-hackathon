@@ -113,7 +113,7 @@ Finally, once you've entered your answers, press <b>"Submit"</b>, and you can ta
 - [x] First release
 - [ ] Make an account/login system
 - [ ] Add text-to-speech
-- [ ] 
+- [ ] Virtual professor avatar
 
 
 
