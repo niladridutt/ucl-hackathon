@@ -71,19 +71,12 @@ async def create_upload_file(files: List[UploadFile] = File(...)):
     # q/a/q/a...
     split_string = answer.split('\n')
     json_response = [{'q0': split_string[0], # One \n between q and a, two between a and next q
-                          'q1': split_string[3],
-                          'q2': split_string[6],
-                          'q3': split_string[9],
-                          'q4': split_string[12],
-                          'q5': split_string[15],
-                          'q6': split_string[18],
-                          'q7': split_string[21],
-                          'q8': split_string[24],
-                          'q9': split_string[27]}]
+                      'q1': split_string[3],
+                      'q2': split_string[6],
+                      'q3': split_string[9],
+                      'q4': split_string[12]}]
     global questions
-    questions = [split_string[0], split_string[3], split_string[6], split_string[9], split_string[12],\
-                 split_string[15], split_string[18], split_string[21], split_string[24],\
-                 split_string[27]]
+    questions = [split_string[0], split_string[3], split_string[6], split_string[9], split_string[12],split_string[15]]
     json_compatible_item_data = jsonable_encoder(json_response)
     # with open('context.pickle', 'wb') as handle:
     #     pickle.dump(context, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -115,7 +108,12 @@ async def giving_back_score(request: Request):
     questions_answers = await request.json()
     global questions
     # Format them back to a single string for GPT
-    string_input = '1. '+questions[0]+'\n'+'Answer: '+questions_answers[0]['answer']+'\n'+'\n'+'2. '+questions[1]+'\n'+'Answer: '+questions_answers[1]['answer']+'\n'+'\n'+'3. '+questions[2]+'\n'+'Answer: '+questions_answers[2]['answer']+'\n'+'\n'+'4. '+questions[3]+'\n'+'Answer: '+questions_answers[3]['answer']+'\n'+'\n'+'5. '+questions[4]+'\n'+'Answer: '+questions_answers[4]['answer']+'\n'+'\n'+'6. '+questions[5]+'\n'+'Answer: '+questions_answers[5]['answer']+'\n'+'\n'+'7. '+questions[6]+'\n'+'Answer: '+questions_answers[6]['answer']+'\n'+'\n'+'8. '+questions[7]+'\n'+'Answer: '+questions_answers[7]['answer']+'\n'+'\n'+'9. '+questions[8]+'\n'+'Answer: '+questions_answers[8]['answer']+'\n'+'\n'+'10. '+questions[9]+'\n'+'Answer: '+questions_answers[9]['answer']
+    string_input = ""
+    for i in range(5):
+        string_input += (questions[i].replace("%s."%str(i+1), "Q%s."%str(i+1))+'\n'+'Answer: '+questions_answers[i]['answer']+'\n'+'\n')
+    print("*" * 100)
+    print(string_input)
+    print("*" * 100)
     with open('context.pickle', 'rb') as handle:
         context = pickle.load(handle)
         answer = execute(context, id=3, age="university student", prompt=string_input)
@@ -130,11 +128,6 @@ async def giving_back_score(request: Request):
                           'f1': split_string[1],
                           'f2': split_string[2],
                           'f3': split_string[3],
-                          'f4': split_string[4],
-                          'f5': split_string[5], # f for feedback
-                          'f6': split_string[6],
-                          'f7': split_string[7],
-                          'f8': split_string[8],
-                          'f9': split_string[9]}]
+                          'f4': split_string[4]}]
         json_compatible_item_data = jsonable_encoder(json_response)
         return JSONResponse(content=json_compatible_item_data)

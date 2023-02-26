@@ -10,7 +10,7 @@ from openai.embeddings_utils import distances_from_embeddings, \
     cosine_similarity
 
 openai.api_key = "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"
-max_tokens = 500
+max_tokens = 1000
 
 
 def get_prompt(id=0, age="university student", prompt="", word_count=200):
@@ -20,7 +20,7 @@ def get_prompt(id=0, age="university student", prompt="", word_count=200):
         return f"Generate a {word_count} word summary of the text for a {age}."
     elif id == 2:
         return f"Based the text above, {prompt}"
-    return f"As a teacher, evaluate each of the below answers by a {age} for the given questions according to the text provided above. Also, give a score of 1-10 to each of the answers one by one and provide feedback. The questions are denoted as Q followed by the question. Each question is followed by the answer given by the student. As a teacher you should evaluate these answers against the text given above. :\n {prompt}"
+    return f"As a teacher, evaluate each of the below answers by a {age} for the given questions according to the text provided above. Also, give a score of 1-10 to each of the answers one by one and provide feedback. The questions are denoted as Q followed by the answer given by the student. As a teacher you should evaluate these answers against the text given above. :\n {prompt}"
 
 
 def remove_newlines(serie):
