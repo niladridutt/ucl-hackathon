@@ -27,8 +27,7 @@ export class QuizComponent {
     } else {
       console.log('Questions not found in local storage');
     }
-    this.questions = [this.qqs['q0'], this.qqs['q1'], this.qqs['q2'], this.qqs['q3'], this.qqs['q4'], this.qqs['q5'], this.qqs['q6'], 
-                    this.qqs['q7'], this.qqs['q8'], this.qqs['q9']];
+    this.questions = [this.qqs['q0'], this.qqs['q1'], this.qqs['q2'], this.qqs['q3'], this.qqs['q4']];
 
     console.log(this.questions)
   }
@@ -45,8 +44,7 @@ export class QuizComponent {
       console.log('response got')
       console.log(response);
       console.log(response[0]['f0'])
-      this.feedbacks = [response[0]['f0'], response[0]['f1'], response[0]['f2'], response[0]['f3'], response[0]['f4'], response[0]['f5'],
-                  response[0]['f6'], response[0]['f7'], response[0]['f8'], response[0]['f9']];
+      this.feedbacks = [response[0]['f0'], response[0]['f1'], response[0]['f2'], response[0]['f3'], response[0]['f4']];
       this.loading = false;
       this.feedback = true;
     },
