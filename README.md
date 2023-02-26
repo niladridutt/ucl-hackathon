@@ -49,11 +49,11 @@ Needless to say, the Covid-19 crisis has had an impact even on more privileged p
 
 To help democratize the access to tutors, and in a process to help struggling students to get their foot back into studying, we present: The Reviewer.
 
-The Reviewer is a GPT-based application that adapt to the user's level and content, and provides a new way of revising by generating novel questions and providing custom feedback.
+The Reviewer is a GPT-based application that adapt to the user's level and content, and provides a new way of revising by generating novel questions and assessing the user's answer to provide custom feedback.
 
 The Reviewer can generate tailor-made questions for the user by scanning their lecture notes (either hand-written or PDFs) and using Optical Character Recognition (OCR) to create a context.
 
-The flexibility of the GPT model then allows us to generate questions and a detailed feedback, by specifying the age/level of the student. We can even go further and give a summary of the lesson, and potential further tracks of reading.
+The flexibility of the GPT model then allows us to generate some questions which the user can answer. After specifying the age/level of the student, the answers by the user are then evaluated and a detailed assessment is provided on how to improve upon those answers. We can even go further and provide further tracks of reading and a learning path for the user.
 
 Over time, the user can now integrate The Reviewer to its revision scheme and find what best works for him.
 
@@ -113,7 +113,7 @@ Finally, once you've entered your answers, press <b>"Submit"</b>, and you can ta
 - [x] First release
 - [ ] Make an account/login system
 - [ ] Add text-to-speech
-- [ ] Create summaries of lessons
+- [ ] 
 
 
 
