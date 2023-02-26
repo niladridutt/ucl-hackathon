@@ -62,6 +62,7 @@ async def create_upload_file(files: List[UploadFile] = File(...)):
     with open('context.pickle', 'wb') as handle:
         pickle.dump(context, handle, protocol=pickle.HIGHEST_PROTOCOL)
     answer = execute(context, id=0, age="university student", prompt="")
+    print(answer)
     # Formatting as JSON
     # TODO: should we keep "1.", "2."... and "Answer:" in the strings
     # q/a/q/a...

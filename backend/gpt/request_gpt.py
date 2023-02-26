@@ -10,7 +10,7 @@ from openai.embeddings_utils import distances_from_embeddings, \
     cosine_similarity
 
 openai.api_key = "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"
-max_tokens = 500
+max_tokens = 2000
 
 
 def get_prompt(id=0, age="university student", prompt="", word_count=200):
