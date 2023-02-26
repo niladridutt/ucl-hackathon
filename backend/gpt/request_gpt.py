@@ -14,6 +14,10 @@ max_tokens = 1000
 
 
 def get_prompt(id=0, age="university student", prompt="", word_count=200):
+    # id 0- generate questions
+    # id 1- generate summary
+    # id 2- Explain questions or topics
+    # id 3- Assessment of answers given by the student
     if id == 0:
         return f"Generate 5 questions based on the given text for a {age}. Please provide deatiled answers to the questions as well."
     elif id == 1:
@@ -103,6 +107,7 @@ def get_existing_context(file_name):
 
 
 def create_context(question, df, max_len=1800, size="ada"):
+    # Creates context embedding of the uploaded text
     q_embeddings = \
     openai.Embedding.create(input=question, engine='text-embedding-ada-002')[
         'data'][0]['embedding']
@@ -130,6 +135,7 @@ def answer_question(
         max_tokens=max_tokens,
         stop_sequence=None
 ):
+    # Query GPT
     context = create_context(
         question,
         df,

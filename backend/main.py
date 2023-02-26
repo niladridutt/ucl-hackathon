@@ -1,15 +1,10 @@
-from typing import Union
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from fastapi import File, UploadFile
-from pydantic import BaseModel
 from typing import List
-import numpy as np
 import shutil
-import os  # To be able to mkdir
-import shutil  # To be able to remove folders+contents
 from gpt.request_gpt import text_to_df, get_context_encoding, execute
 import pickle
 from azure_components.storage import azure_storage
@@ -18,7 +13,6 @@ app = FastAPI()
 
 name_of_the_subfolder = 'items'
 questions = []
-# reader = easyocr.Reader(['en'])
 origins = ["*"]
 
 app.add_middleware(
@@ -39,6 +33,8 @@ def read_root():
 
 @app.post("/uploadfiles/")
 async def create_upload_file(files: List[UploadFile] = File(...)):
+    # Uploads list of PDFs/images which are to supplied as the study material
+    # and returns generated questions to the front-end
     result = ""
     for file in files:
         file_name = ""
@@ -53,22 +49,18 @@ async def create_upload_file(files: List[UploadFile] = File(...)):
         with open(file_name, 'wb+') as writer:
             shutil.copyfileobj(file.file, writer)
             with open(file_name, 'rb') as file_:
+                # Upload to azure storage
                 storage.delete(file_name)
                 storage.upload(file_name, file_)
+                # Run OCR to get text from pdf
                 ocr_result = ocr.get_ocr(file.filename)
                 result += ocr_result
-    print("*"*100)
-    print(result)
-    print("*" * 100)
+    # Encode text to be used as context vector for GPT
     df = text_to_df(result)
     context = get_context_encoding(df)
     with open('context.pickle', 'wb') as handle:
         pickle.dump(context, handle, protocol=pickle.HIGHEST_PROTOCOL)
     answer = execute(context, id=0, age="university student", prompt="")
-    print(answer)
-    # Formatting as JSON
-    # TODO: should we keep "1.", "2."... and "Answer:" in the strings
-    # q/a/q/a...
     split_string = answer.split('\n')
     json_response = [{'q0': split_string[0], # One \n between q and a, two between a and next q
                       'q1': split_string[3],
@@ -76,54 +68,24 @@ async def create_upload_file(files: List[UploadFile] = File(...)):
                       'q3': split_string[9],
                       'q4': split_string[12]}]
     global questions
+    # Return generated questions
     questions = [split_string[0], split_string[3], split_string[6], split_string[9], split_string[12]]
     json_compatible_item_data = jsonable_encoder(json_response)
-    # with open('context.pickle', 'wb') as handle:
-    #     pickle.dump(context, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    # dummy_response = [
-    #     {"Success": "true"}]
-    # json_compatible_item_data = jsonable_encoder(dummy_response)
     return JSONResponse(content=json_compatible_item_data)
 
-"""
-@app.get('/check_answers/{q0}/{a0}/{q1}/{a1}/{q2}/{a2}/{q3}/{a3}/{q4}/{a4}')
-def giving_back_score(q0: str, a0: str, q1: str, a1: str, q2: str, a2: str, q3: str, a3: str, q4: str, a4: str):
-    # Format them back to a single string for GPT
-    string_input = '1. '+q0+'\n'+'Answer: '+a0+'\n'+'2. '+q1+'\n'+'Answer: '+a1+'\n'+'3. '+q2+'\n'+'Answer: '+a2+'\n'+'4. '+q3+'\n'+'Answer: '+a3+'\n'+'5. '+q4+'\n'+'Answer: '+a4
-    with open('context.pickle', 'rb') as handle:
-        context = pickle.load(handle)
-        answer = execute(context, id=3, age="university student", prompt=string_input)
-        split_string = answer.split('\n')
-        json_response = [{'f0': split_string[0], # f for feedback
-                          'f1': split_string[1],
-                          'f2': split_string[2],
-                          'f3': split_string[3],
-                          'f4': split_string[4]}]
-        json_compatible_item_data = jsonable_encoder(json_response)
-        return JSONResponse(content=json_compatible_item_data)
-"""
 
 @app.post('/check_answers/')
 async def giving_back_score(request: Request):
+    # Provides assessment of your answers on the questions
     questions_answers = await request.json()
     global questions
-    # Format them back to a single string for GPT
     string_input = ""
     for i in range(5):
         string_input += (questions[i].replace("%s."%str(i+1), "Q%s."%str(i+1))+'\n'+'Answer: '+questions_answers[i]['answer']+'\n'+'\n')
-    print("*" * 100)
-    print(string_input)
-    print("*" * 100)
     with open('context.pickle', 'rb') as handle:
         context = pickle.load(handle)
         answer = execute(context, id=3, age="university student", prompt=string_input)
         split_string = answer.split('\n\n')
-        print('-------------')
-        print(answer)
-        print('QQQQQQQQQQQQQQQQQ')
-        print(questions)
-        print('zzzzzzzzzzzzzzzzzzzzzzzzzz')
-        print(split_string)
         json_response = [{'f0': split_string[0], # f for feedback
                           'f1': split_string[1],
                           'f2': split_string[2],
