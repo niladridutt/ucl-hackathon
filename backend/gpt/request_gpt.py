@@ -20,7 +20,7 @@ def get_prompt(id=0, age="university student", prompt="", word_count=200):
         return f"Generate a {word_count} word summary of the text for a {age}."
     elif id == 2:
         return f"Based the text above, {prompt}"
-    return f"Please evaluate each of the below answers by a {age} for the given questions according to the text provided above. Also, give a score of 1-10 to each of the answers one by one and provide feedback. The questions and answers are as follows:\n {prompt}"
+    return f"As a teacher, evaluate each of the below answers by a {age} for the given questions according to the text provided above. Also, give a score of 1-10 to each of the answers one by one and provide feedback. The questions and answers are as follows:\n {prompt}"
 
 
 def remove_newlines(serie):
