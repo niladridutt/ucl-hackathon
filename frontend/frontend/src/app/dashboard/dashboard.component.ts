@@ -26,7 +26,6 @@ export class DashboardComponent implements OnInit {
   selectedPdfIds: number[] = [];
 
   ngOnInit(): void {
-    console.log('haha');
     this.http.get<Pdf[]>('http://127.0.0.1:8000/list_of_pdfs').subscribe(
       (response) => {
         this.pdfList = response;
@@ -56,6 +55,6 @@ export class DashboardComponent implements OnInit {
   }
 
   startQuiz() {
-    
+    this.router.navigate(['/quiz'])
   }
 }
