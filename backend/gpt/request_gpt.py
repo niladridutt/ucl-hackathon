@@ -10,12 +10,12 @@ from openai.embeddings_utils import distances_from_embeddings, \
     cosine_similarity
 
 openai.api_key = "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"
-max_tokens = 2000
+max_tokens = 500
 
 
 def get_prompt(id=0, age="university student", prompt="", word_count=200):
     if id == 0:
-        return f"Generate 10 questions based on the given text for a {age}. Please provide deatiled answers to the questions as well."
+        return f"Generate 5 questions based on the given text for a {age}. Please provide deatiled answers to the questions as well."
     elif id == 1:
         return f"Generate a {word_count} word summary of the text for a {age}."
     elif id == 2:
