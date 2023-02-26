@@ -17,6 +17,7 @@ from azure_components.ocr import OCR
 app = FastAPI()
 
 name_of_the_subfolder = 'items'
+questions = []
 # reader = easyocr.Reader(['en'])
 origins = ["*"]
 
@@ -58,6 +59,8 @@ async def create_upload_file(files: List[UploadFile] = File(...)):
                 result += ocr_result
     df = text_to_df(result)
     context = get_context_encoding(df)
+    with open('context.pickle', 'wb') as handle:
+        pickle.dump(context, handle, protocol=pickle.HIGHEST_PROTOCOL)
     answer = execute(context, id=0, age="university student", prompt="")
     # Formatting as JSON
     # TODO: should we keep "1.", "2."... and "Answer:" in the strings
@@ -73,6 +76,10 @@ async def create_upload_file(files: List[UploadFile] = File(...)):
                           'q7': split_string[21],
                           'q8': split_string[24],
                           'q9': split_string[27]}]
+    global questions
+    questions = [split_string[0], split_string[3], split_string[6], split_string[9], split_string[12],\
+                 split_string[15], split_string[18], split_string[21], split_string[24],\
+                 split_string[27]]
     json_compatible_item_data = jsonable_encoder(json_response)
     # with open('context.pickle', 'wb') as handle:
     #     pickle.dump(context, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -100,14 +107,21 @@ def giving_back_score(q0: str, a0: str, q1: str, a1: str, q2: str, a2: str, q3: 
 """
 
 @app.post('/check_answers/')
-def giving_back_score(request: Request):
-    questions_answers = request.json()
+async def giving_back_score(request: Request):
+    questions_answers = await request.json()
+    global questions
     # Format them back to a single string for GPT
-    string_input = '1. '+questions_answers[0]['question']+'\n'+'Answer: '+questions_answers[0]['answer']+'\n'+'\n'+'2. '+questions_answers[1]['question']+'\n'+'Answer: '+questions_answers[1]['answer']+'\n'+'\n'+'3. '+questions_answers[2]['question']+'\n'+'Answer: '+questions_answers[2]['answer']+'\n'+'\n'+'4. '+questions_answers[3]['question']+'\n'+'Answer: '+questions_answers[3]['answer']+'\n'+'\n'+'5. '+questions_answers[4]['question']+'\n'+'Answer: '+questions_answers[4]['answer']+'\n'+'\n'+'6. '+questions_answers[5]['question']+'\n'+'Answer: '+questions_answers[5]['answer']+'\n'+'\n'+'7. '+questions_answers[6]['question']+'\n'+'Answer: '+questions_answers[6]['answer']+'\n'+'\n'+'8. '+questions_answers[7]['question']+'\n'+'Answer: '+questions_answers[7]['answer']+'\n'+'\n'+'9. '+questions_answers[8]['question']+'\n'+'Answer: '+questions_answers[8]['answer']+'\n'+'\n'+'10. '+questions_answers[9]['question']+'\n'+'Answer: '+questions_answers[9]['answer']
+    string_input = '1. '+questions[0]+'\n'+'Answer: '+questions_answers[0]['answer']+'\n'+'\n'+'2. '+questions[1]+'\n'+'Answer: '+questions_answers[1]['answer']+'\n'+'\n'+'3. '+questions[2]+'\n'+'Answer: '+questions_answers[2]['answer']+'\n'+'\n'+'4. '+questions[3]+'\n'+'Answer: '+questions_answers[3]['answer']+'\n'+'\n'+'5. '+questions[4]+'\n'+'Answer: '+questions_answers[4]['answer']+'\n'+'\n'+'6. '+questions[5]+'\n'+'Answer: '+questions_answers[5]['answer']+'\n'+'\n'+'7. '+questions[6]+'\n'+'Answer: '+questions_answers[6]['answer']+'\n'+'\n'+'8. '+questions[7]+'\n'+'Answer: '+questions_answers[7]['answer']+'\n'+'\n'+'9. '+questions[8]+'\n'+'Answer: '+questions_answers[8]['answer']+'\n'+'\n'+'10. '+questions[9]+'\n'+'Answer: '+questions_answers[9]['answer']
     with open('context.pickle', 'rb') as handle:
         context = pickle.load(handle)
         answer = execute(context, id=3, age="university student", prompt=string_input)
-        split_string = answer.split('\n')
+        split_string = answer.split('\n\n')
+        print('-------------')
+        print(answer)
+        print('QQQQQQQQQQQQQQQQQ')
+        print(questions)
+        print('zzzzzzzzzzzzzzzzzzzzzzzzzz')
+        print(split_string)
         json_response = [{'f0': split_string[0], # f for feedback
                           'f1': split_string[2],
                           'f2': split_string[4],
